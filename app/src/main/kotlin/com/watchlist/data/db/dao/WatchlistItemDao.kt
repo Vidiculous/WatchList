@@ -21,4 +21,10 @@ interface WatchlistItemDao {
 
     @Query("DELETE FROM watchlist_items WHERE id = :id")
     suspend fun deleteById(id: Long)
+
+    @Query("UPDATE watchlist_items SET voteAverage = :voteAverage WHERE id = :id")
+    suspend fun updateVoteAverage(id: Long, voteAverage: Double)
+
+    @Query("UPDATE watchlist_items SET releaseDate = :releaseDate WHERE id = :id")
+    suspend fun updateReleaseDate(id: Long, releaseDate: String)
 }

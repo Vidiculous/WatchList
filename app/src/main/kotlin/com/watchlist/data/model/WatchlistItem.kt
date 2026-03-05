@@ -6,5 +6,7 @@ data class WatchlistItem(
     val title: String,
     val type: MediaType,
     val posterPath: String?,
+    val voteAverage: Double?,
+    val releaseDate: String?,
     val addedAt: Long = System.currentTimeMillis()
 )

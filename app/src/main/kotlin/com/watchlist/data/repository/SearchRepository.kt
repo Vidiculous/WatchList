@@ -23,7 +23,10 @@ class SearchRepository @Inject constructor(private val api: TmdbApi) {
                     tmdbId = result.id,
                     title = title,
                     type = type,
-                    posterPath = result.posterPath
+                    posterPath = result.posterPath,
+                    voteAverage = result.voteAverage?.takeIf { it > 0 },
+                    releaseDate = result.releaseDate?.takeIf { it.isNotBlank() }
+                        ?: result.firstAirDate?.takeIf { it.isNotBlank() }
                 )
             }
         } catch (e: Exception) {

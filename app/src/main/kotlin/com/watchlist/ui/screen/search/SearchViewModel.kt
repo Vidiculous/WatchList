@@ -75,7 +75,9 @@ class SearchViewModel @Inject constructor(
                 tmdbId = result.tmdbId,
                 title = result.title,
                 type = result.type,
-                posterPath = result.posterPath
+                posterPath = result.posterPath,
+                voteAverage = result.voteAverage,
+                releaseDate = result.releaseDate
             )
             watchlistRepository.addItem(item)
             _addedIds.update { it + result.tmdbId }

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,6 +16,7 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,6 +44,8 @@ fun WatchlistScreen(
     val watchlist by viewModel.watchlist.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val showSearch by viewModel.showSearch.collectAsState()
+    val availabilityByItem by viewModel.availabilityByItem.collectAsState()
+    val sortOrder by viewModel.sortOrder.collectAsState()
 
     Scaffold(
         topBar = {
@@ -62,6 +66,26 @@ fun WatchlistScreen(
                 )
                 if (isRefreshing) {
                     LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                }
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    FilterChip(
+                        selected = sortOrder == SortOrder.DATE_ADDED,
+                        onClick = { viewModel.setSortOrder(SortOrder.DATE_ADDED) },
+                        label = { Text("Date added") }
+                    )
+                    FilterChip(
+                        selected = sortOrder == SortOrder.SCORE,
+                        onClick = { viewModel.setSortOrder(SortOrder.SCORE) },
+                        label = { Text("Score") }
+                    )
+                    FilterChip(
+                        selected = sortOrder == SortOrder.RELEASE_DATE,
+                        onClick = { viewModel.setSortOrder(SortOrder.RELEASE_DATE) },
+                        label = { Text("Release date") }
+                    )
                 }
             }
         },
@@ -101,6 +125,7 @@ fun WatchlistScreen(
                 items(watchlist, key = { it.id }) { item ->
                     WatchlistItemCard(
                         item = item,
+                        services = availabilityByItem[item.id] ?: emptyList(),
                         onDelete = { viewModel.removeItem(item) }
                     )
                 }

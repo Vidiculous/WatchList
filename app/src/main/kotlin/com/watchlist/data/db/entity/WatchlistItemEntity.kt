@@ -12,6 +12,8 @@ data class WatchlistItemEntity(
     val title: String,
     val type: String,
     val posterPath: String?,
+    val voteAverage: Double?,
+    val releaseDate: String?,
     val addedAt: Long
 )
 
@@ -21,6 +23,8 @@ fun WatchlistItemEntity.toDomain() = WatchlistItem(
     title = title,
     type = MediaType.valueOf(type),
     posterPath = posterPath,
+    voteAverage = voteAverage,
+    releaseDate = releaseDate,
     addedAt = addedAt
 )
 
@@ -30,5 +34,7 @@ fun WatchlistItem.toEntity() = WatchlistItemEntity(
     title = title,
     type = type.name,
     posterPath = posterPath,
+    voteAverage = voteAverage,
+    releaseDate = releaseDate,
     addedAt = addedAt
 )

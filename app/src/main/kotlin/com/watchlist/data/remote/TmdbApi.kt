@@ -1,6 +1,7 @@
 package com.watchlist.data.remote
 
 import com.watchlist.data.remote.dto.TmdbSearchResponse
+import com.watchlist.data.remote.dto.TmdbVoteDto
 import com.watchlist.data.remote.dto.TmdbWatchProvidersResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -29,6 +30,12 @@ interface TmdbApi {
     suspend fun getTvWatchProviders(
         @Path("id") tmdbId: Int
     ): TmdbWatchProvidersResponse
+
+    @GET("3/movie/{id}")
+    suspend fun getMovieDetails(@Path("id") id: Int): TmdbVoteDto
+
+    @GET("3/tv/{id}")
+    suspend fun getTvDetails(@Path("id") id: Int): TmdbVoteDto
 
     companion object {
         const val BASE_URL = "https://api.themoviedb.org/"
