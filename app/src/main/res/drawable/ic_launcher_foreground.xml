@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    WatchList app icon foreground — 108×108dp adaptive icon canvas.
+    Safe zone: inner 72×72dp (18,18 → 90,90).
+
+    Design:
+      • Three stacked media-card outlines (purple / teal / orange) with neon glow.
+        Each card = rounded rect (30,24 → 78,82), rotated around centre (54,54).
+        Glow is simulated by a wide, low-alpha stroke under a thin bright stroke.
+      • Four arc segments at r = 21 form a neon ring (orange / teal / purple / red-pink).
+        Arcs span 80° each with 10° gaps, so the ring reads like a streaming-pie chart.
+      • White play triangle, centroid exactly at (54,54), with two soft white halos.
+
+    Rounded-rect path (all three cards share the same shape, only the <group> differs):
+      M 38,24  h 32  q 8,0 8,8  v 42  q 0,8 -8,8  h -32  q -8,0 -8,-8  v -42  q 0,-8 8,-8  z
+      Spans (30,24)→(78,82), corners r=8, centre=(54,53).
+
+    Arc coordinates: centre=(54,54), r=21
+      Segment 1  5°→ 85°  start=(74.92,55.83)  end=(55.83,74.92)  [orange]
+      Segment 2 95°→175°  start=(52.17,74.92)  end=(33.08,55.83)  [teal]
+      Segment 3 185°→265° start=(33.08,52.17)  end=(52.17,33.08)  [purple]
+      Segment 4 275°→355° start=(55.83,33.08)  end=(74.92,52.17)  [red-pink]
+
+    Play triangle: vertices (49,47) (64,54) (49,61) — centroid = (54,54) exactly.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- ═══════════════════════════════════════════════════════════
+         CARD 1 — Purple  |  back-left  |  rotation −10°
+         ═══════════════════════════════════════════════════════════ -->
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:rotation="-10"
+        android:translateX="-4"
+        android:translateY="-4">
+        <!-- neon glow halo -->
+        <path
+            android:pathData="M 38,24 h 32 q 8,0 8,8 v 42 q 0,8 -8,8 h -32 q -8,0 -8,-8 v -42 q 0,-8 8,-8 z"
+            android:fillColor="#00000000"
+            android:strokeColor="#B44FFF"
+            android:strokeWidth="9"
+            android:strokeAlpha="0.22"/>
+        <!-- bright neon core -->
+        <path
+            android:pathData="M 38,24 h 32 q 8,0 8,8 v 42 q 0,8 -8,8 h -32 q -8,0 -8,-8 v -42 q 0,-8 8,-8 z"
+            android:fillColor="#00000000"
+            android:strokeColor="#CC78FF"
+            android:strokeWidth="2"/>
+    </group>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         CARD 2 — Teal  |  middle  |  slight −2° tilt
+         ═══════════════════════════════════════════════════════════ -->
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:rotation="-2">
+        <path
+            android:pathData="M 38,24 h 32 q 8,0 8,8 v 42 q 0,8 -8,8 h -32 q -8,0 -8,-8 v -42 q 0,-8 8,-8 z"
+            android:fillColor="#00000000"
+            android:strokeColor="#00FFD4"
+            android:strokeWidth="9"
+            android:strokeAlpha="0.22"/>
+        <path
+            android:pathData="M 38,24 h 32 q 8,0 8,8 v 42 q 0,8 -8,8 h -32 q -8,0 -8,-8 v -42 q 0,-8 8,-8 z"
+            android:fillColor="#00000000"
+            android:strokeColor="#00FFE4"
+            android:strokeWidth="2"/>
+    </group>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         CARD 3 — Orange  |  front-right  |  rotation +8°
+         ═══════════════════════════════════════════════════════════ -->
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:rotation="8"
+        android:translateX="4"
+        android:translateY="4">
+        <path
+            android:pathData="M 38,24 h 32 q 8,0 8,8 v 42 q 0,8 -8,8 h -32 q -8,0 -8,-8 v -42 q 0,-8 8,-8 z"
+            android:fillColor="#00000000"
+            android:strokeColor="#FF8C00"
+            android:strokeWidth="9"
+            android:strokeAlpha="0.22"/>
+        <path
+            android:pathData="M 38,24 h 32 q 8,0 8,8 v 42 q 0,8 -8,8 h -32 q -8,0 -8,-8 v -42 q 0,-8 8,-8 z"
+            android:fillColor="#00000000"
+            android:strokeColor="#FFAA00"
+            android:strokeWidth="2"/>
+    </group>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         RING — four 80° neon arcs  (r = 21, centre = 54,54)
+         Drawn on top of the cards so they appear as an overlay ring.
+         ═══════════════════════════════════════════════════════════ -->
+
+    <!-- Segment 1: Orange  5° → 85° -->
+    <path
+        android:pathData="M 74.92,55.83 A 21,21 0 0,1 55.83,74.92"
+        android:fillColor="#00000000"
+        android:strokeColor="#FF9500"
+        android:strokeWidth="9"
+        android:strokeAlpha="0.28"
+        android:strokeLineCap="round"/>
+    <path
+        android:pathData="M 74.92,55.83 A 21,21 0 0,1 55.83,74.92"
+        android:fillColor="#00000000"
+        android:strokeColor="#FFBB40"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round"/>
+
+    <!-- Segment 2: Teal  95° → 175° -->
+    <path
+        android:pathData="M 52.17,74.92 A 21,21 0 0,1 33.08,55.83"
+        android:fillColor="#00000000"
+        android:strokeColor="#00D4A3"
+        android:strokeWidth="9"
+        android:strokeAlpha="0.28"
+        android:strokeLineCap="round"/>
+    <path
+        android:pathData="M 52.17,74.92 A 21,21 0 0,1 33.08,55.83"
+        android:fillColor="#00000000"
+        android:strokeColor="#00FFD4"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round"/>
+
+    <!-- Segment 3: Purple  185° → 265° -->
+    <path
+        android:pathData="M 33.08,52.17 A 21,21 0 0,1 52.17,33.08"
+        android:fillColor="#00000000"
+        android:strokeColor="#9B4EFF"
+        android:strokeWidth="9"
+        android:strokeAlpha="0.28"
+        android:strokeLineCap="round"/>
+    <path
+        android:pathData="M 33.08,52.17 A 21,21 0 0,1 52.17,33.08"
+        android:fillColor="#00000000"
+        android:strokeColor="#B870FF"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round"/>
+
+    <!-- Segment 4: Red-Pink  275° → 355° -->
+    <path
+        android:pathData="M 55.83,33.08 A 21,21 0 0,1 74.92,52.17"
+        android:fillColor="#00000000"
+        android:strokeColor="#FF3D7F"
+        android:strokeWidth="9"
+        android:strokeAlpha="0.28"
+        android:strokeLineCap="round"/>
+    <path
+        android:pathData="M 55.83,33.08 A 21,21 0 0,1 74.92,52.17"
+        android:fillColor="#00000000"
+        android:strokeColor="#FF6099"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round"/>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         PLAY TRIANGLE — centroid at (54,54)
+         Three layers: outer halo → mid halo → solid white core.
+         Centroid maths: (2L + R) / 3 = 54  →  R = 162 − 2L
+           outer : L=44  R=74  H=22  → (44,43)  (74,54)  (44,65)
+           mid   : L=46  R=70  H=18  → (46,45)  (70,54)  (46,63)
+           core  : L=49  R=64  H=14  → (49,47)  (64,54)  (49,61)
+         ═══════════════════════════════════════════════════════════ -->
+    <!-- outer soft halo (12% white) -->
+    <path
+        android:pathData="M 44,43 L 74,54 L 44,65 Z"
+        android:fillColor="#1EFFFFFF"/>
+    <!-- mid halo (20% white) -->
+    <path
+        android:pathData="M 46,45 L 70,54 L 46,63 Z"
+        android:fillColor="#33FFFFFF"/>
+    <!-- solid white core -->
+    <path
+        android:pathData="M 49,47 L 64,54 L 49,61 Z"
+        android:fillColor="#FFFFFFFF"/>
+
+</vector>
