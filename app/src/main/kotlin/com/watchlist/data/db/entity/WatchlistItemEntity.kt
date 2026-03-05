@@ -14,7 +14,9 @@ data class WatchlistItemEntity(
     val posterPath: String?,
     val voteAverage: Double?,
     val releaseDate: String?,
-    val addedAt: Long
+    val addedAt: Long,
+    val watched: Boolean = false,
+    val userRating: Int? = null
 )
 
 fun WatchlistItemEntity.toDomain() = WatchlistItem(
@@ -25,7 +27,9 @@ fun WatchlistItemEntity.toDomain() = WatchlistItem(
     posterPath = posterPath,
     voteAverage = voteAverage,
     releaseDate = releaseDate,
-    addedAt = addedAt
+    addedAt = addedAt,
+    watched = watched,
+    userRating = userRating
 )
 
 fun WatchlistItem.toEntity() = WatchlistItemEntity(
@@ -36,5 +40,7 @@ fun WatchlistItem.toEntity() = WatchlistItemEntity(
     posterPath = posterPath,
     voteAverage = voteAverage,
     releaseDate = releaseDate,
-    addedAt = addedAt
+    addedAt = addedAt,
+    watched = watched,
+    userRating = userRating
 )

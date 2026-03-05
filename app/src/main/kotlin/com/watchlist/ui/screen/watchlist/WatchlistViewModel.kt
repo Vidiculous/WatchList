@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 enum class SortOrder { DATE_ADDED, SCORE, RELEASE_DATE }
+enum class WatchTab { TO_WATCH, WATCHED }
 
 @HiltViewModel
 class WatchlistViewModel @Inject constructor(
@@ -39,16 +40,20 @@ class WatchlistViewModel @Inject constructor(
     private val _sortOrder = MutableStateFlow(SortOrder.DATE_ADDED)
     val sortOrder: StateFlow<SortOrder> = _sortOrder.asStateFlow()
 
-    val watchlist: StateFlow<List<WatchlistItem>> = combine(
-        watchlistRepository.watchlist,
+    private val _activeTab = MutableStateFlow(WatchTab.TO_WATCH)
+    val activeTab: StateFlow<WatchTab> = _activeTab.asStateFlow()
+
+    val toWatchList: StateFlow<List<WatchlistItem>> = combine(
+        watchlistRepository.unwatchedItems,
         _sortOrder
-    ) { items, order ->
-        when (order) {
-            SortOrder.DATE_ADDED -> items
-            SortOrder.SCORE -> items.sortedByDescending { it.voteAverage ?: -1.0 }
-            SortOrder.RELEASE_DATE -> items.sortedByDescending { it.releaseDate ?: "" }
-        }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    ) { items, order -> sortItems(items, order) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val watchedList: StateFlow<List<WatchlistItem>> = combine(
+        watchlistRepository.watchedItems,
+        _sortOrder
+    ) { items, order -> sortItems(items, order) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val availabilityByItem: StateFlow<Map<Long, List<StreamingAvailability>>> =
@@ -59,12 +64,28 @@ class WatchlistViewModel @Inject constructor(
             }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
 
+    private fun sortItems(items: List<WatchlistItem>, order: SortOrder): List<WatchlistItem> =
+        when (order) {
+            SortOrder.DATE_ADDED -> items
+            SortOrder.SCORE -> items.sortedByDescending { it.voteAverage ?: -1.0 }
+            SortOrder.RELEASE_DATE -> items.sortedByDescending { it.releaseDate ?: "" }
+        }
+
     fun openSearch() { _showSearch.value = true }
     fun closeSearch() { _showSearch.value = false }
     fun setSortOrder(order: SortOrder) { _sortOrder.value = order }
+    fun setActiveTab(tab: WatchTab) { _activeTab.value = tab }
 
     fun removeItem(item: WatchlistItem) {
         viewModelScope.launch { watchlistRepository.removeItem(item.id) }
+    }
+
+    fun markWatched(item: WatchlistItem, watched: Boolean) {
+        viewModelScope.launch { watchlistRepository.markWatched(item.id, watched) }
+    }
+
+    fun setRating(item: WatchlistItem, rating: Int?) {
+        viewModelScope.launch { watchlistRepository.setUserRating(item.id, rating) }
     }
 
     fun refresh() {

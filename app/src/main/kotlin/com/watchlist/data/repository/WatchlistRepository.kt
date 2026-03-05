@@ -19,9 +19,19 @@ class WatchlistRepository @Inject constructor(
     val watchlist: Flow<List<WatchlistItem>> =
         dao.getAll().map { list -> list.map { it.toDomain() } }
 
+    val unwatchedItems: Flow<List<WatchlistItem>> =
+        dao.getAllUnwatched().map { list -> list.map { it.toDomain() } }
+
+    val watchedItems: Flow<List<WatchlistItem>> =
+        dao.getAllWatched().map { list -> list.map { it.toDomain() } }
+
     suspend fun addItem(item: WatchlistItem): Long = dao.insert(item.toEntity())
 
     suspend fun removeItem(id: Long) = dao.deleteById(id)
+
+    suspend fun markWatched(id: Long, watched: Boolean) = dao.updateWatched(id, watched)
+
+    suspend fun setUserRating(id: Long, rating: Int?) = dao.updateUserRating(id, rating)
 
     suspend fun isAlreadyAdded(tmdbId: Int, type: MediaType): Boolean =
         dao.findByTmdbId(tmdbId, type.name) != null

@@ -21,7 +21,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,12 +42,15 @@ import com.watchlist.data.model.StreamingAvailability
 import com.watchlist.data.model.WatchlistItem
 import com.watchlist.data.remote.TmdbApi
 import java.util.Locale
+import kotlin.math.roundToInt
 
 @Composable
 fun WatchlistItemCard(
     item: WatchlistItem,
     services: List<StreamingAvailability> = emptyList(),
     onDelete: () -> Unit,
+    onMarkWatched: (Boolean) -> Unit,
+    onSetRating: (Int?) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
@@ -90,8 +95,8 @@ fun WatchlistItemCard(
                     )
                 }
                 // Score block
-                if (item.voteAverage != null) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    if (item.voteAverage != null) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
                                 imageVector = Icons.Default.Star,
@@ -108,6 +113,28 @@ fun WatchlistItemCard(
                         }
                         Text(
                             text = "TMDB",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    if (item.userRating != null) {
+                        Spacer(Modifier.width(8.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Default.Star,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(Modifier.width(2.dp))
+                            Text(
+                                text = "${item.userRating}",
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                        Text(
+                            text = "Mine",
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -150,6 +177,41 @@ fun WatchlistItemCard(
                                 text = service.serviceName,
                                 style = MaterialTheme.typography.bodyMedium
                             )
+                        }
+                    }
+
+                    // Watched/rating controls
+                    if (!item.watched) {
+                        TextButton(onClick = { onMarkWatched(true) }) {
+                            Text("Mark as watched")
+                        }
+                    } else {
+                        Text(
+                            text = "Your rating",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Slider(
+                                value = (item.userRating ?: 0).toFloat(),
+                                onValueChange = { onSetRating(it.roundToInt()) },
+                                valueRange = 0f..10f,
+                                steps = 9,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(
+                                text = "${item.userRating ?: 0}",
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                        TextButton(onClick = { onMarkWatched(false) }) {
+                            Text("Move back to watchlist")
                         }
                     }
 

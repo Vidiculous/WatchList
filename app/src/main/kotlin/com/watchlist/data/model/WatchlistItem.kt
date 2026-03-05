@@ -8,5 +8,7 @@ data class WatchlistItem(
     val posterPath: String?,
     val voteAverage: Double?,
     val releaseDate: String?,
-    val addedAt: Long = System.currentTimeMillis()
+    val addedAt: Long = System.currentTimeMillis(),
+    val watched: Boolean = false,
+    val userRating: Int? = null
 )

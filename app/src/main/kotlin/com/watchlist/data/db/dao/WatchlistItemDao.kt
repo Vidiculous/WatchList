@@ -13,6 +13,12 @@ interface WatchlistItemDao {
     @Query("SELECT * FROM watchlist_items ORDER BY addedAt DESC")
     fun getAll(): Flow<List<WatchlistItemEntity>>
 
+    @Query("SELECT * FROM watchlist_items WHERE watched = 0 ORDER BY addedAt DESC")
+    fun getAllUnwatched(): Flow<List<WatchlistItemEntity>>
+
+    @Query("SELECT * FROM watchlist_items WHERE watched = 1 ORDER BY addedAt DESC")
+    fun getAllWatched(): Flow<List<WatchlistItemEntity>>
+
     @Query("SELECT * FROM watchlist_items WHERE tmdbId = :tmdbId AND type = :type LIMIT 1")
     suspend fun findByTmdbId(tmdbId: Int, type: String): WatchlistItemEntity?
 
@@ -27,4 +33,10 @@ interface WatchlistItemDao {
 
     @Query("UPDATE watchlist_items SET releaseDate = :releaseDate WHERE id = :id")
     suspend fun updateReleaseDate(id: Long, releaseDate: String)
+
+    @Query("UPDATE watchlist_items SET watched = :watched WHERE id = :id")
+    suspend fun updateWatched(id: Long, watched: Boolean)
+
+    @Query("UPDATE watchlist_items SET userRating = :rating WHERE id = :id")
+    suspend fun updateUserRating(id: Long, rating: Int?)
 }

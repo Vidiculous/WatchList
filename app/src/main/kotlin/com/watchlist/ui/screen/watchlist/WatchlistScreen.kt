@@ -23,6 +23,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -41,11 +43,15 @@ fun WatchlistScreen(
     onNavigateToServices: () -> Unit,
     onNavigateToSettings: () -> Unit
 ) {
-    val watchlist by viewModel.watchlist.collectAsState()
+    val toWatchList by viewModel.toWatchList.collectAsState()
+    val watchedList by viewModel.watchedList.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val showSearch by viewModel.showSearch.collectAsState()
     val availabilityByItem by viewModel.availabilityByItem.collectAsState()
     val sortOrder by viewModel.sortOrder.collectAsState()
+    val activeTab by viewModel.activeTab.collectAsState()
+
+    val currentList = if (activeTab == WatchTab.TO_WATCH) toWatchList else watchedList
 
     Scaffold(
         topBar = {
@@ -87,6 +93,18 @@ fun WatchlistScreen(
                         label = { Text("Release date") }
                     )
                 }
+                TabRow(selectedTabIndex = activeTab.ordinal) {
+                    Tab(
+                        selected = activeTab == WatchTab.TO_WATCH,
+                        onClick = { viewModel.setActiveTab(WatchTab.TO_WATCH) },
+                        text = { Text("To Watch (${toWatchList.size})") }
+                    )
+                    Tab(
+                        selected = activeTab == WatchTab.WATCHED,
+                        onClick = { viewModel.setActiveTab(WatchTab.WATCHED) },
+                        text = { Text("Watched (${watchedList.size})") }
+                    )
+                }
             }
         },
         floatingActionButton = {
@@ -95,7 +113,7 @@ fun WatchlistScreen(
             }
         }
     ) { innerPadding ->
-        if (watchlist.isEmpty()) {
+        if (currentList.isEmpty()) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -104,14 +122,16 @@ fun WatchlistScreen(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = "Your watchlist is empty",
+                        text = if (activeTab == WatchTab.TO_WATCH) "Your watchlist is empty" else "No watched items yet",
                         style = MaterialTheme.typography.titleMedium
                     )
-                    Text(
-                        text = "Tap + to add movies and series",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    if (activeTab == WatchTab.TO_WATCH) {
+                        Text(
+                            text = "Tap + to add movies and series",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
             }
         } else {
@@ -122,11 +142,13 @@ fun WatchlistScreen(
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(watchlist, key = { it.id }) { item ->
+                items(currentList, key = { it.id }) { item ->
                     WatchlistItemCard(
                         item = item,
                         services = availabilityByItem[item.id] ?: emptyList(),
-                        onDelete = { viewModel.removeItem(item) }
+                        onDelete = { viewModel.removeItem(item) },
+                        onMarkWatched = { watched -> viewModel.markWatched(item, watched) },
+                        onSetRating = { rating -> viewModel.setRating(item, rating) }
                     )
                 }
             }
